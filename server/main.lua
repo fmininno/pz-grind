@@ -56,12 +56,17 @@ AddEventHandler('pz-grind:store:delete', function(object, serverID)
 end)
 
 function Grind.ScheduleSpawnChest(obj)
-    if Config.Debug then print('[PZ-GRIND] Job scheduled: ', json.encode(obj)) end
-    lib.cron.new(obj.cron, function()
-        if Config.Debug then print('[PZ-GRIND] Start Job: ', json.encode(obj.id)) end
-        local obj = Config.Objects[obj.id]
-        Grind.Spawn(obj)
-    end)
+    local xPlayers = ESX.GetExtendedPlayers()
+    if #xPlayers > 0 then
+        if Config.Debug then print('[PZ-GRIND] Job scheduled: ', json.encode(obj)) end
+        lib.cron.new(obj.cron, function()
+            if Config.Debug then print('[PZ-GRIND] Start Job: ', json.encode(obj.id)) end
+            local obj = Config.Objects[obj.id]
+            Grind.Spawn(obj)
+        end)
+    else
+        if Config.Debug then print('[PZ-GRIND] Job stppped no players online: ', json.encode(obj)) end
+    end
 end
 
 function Grind.Logger()
